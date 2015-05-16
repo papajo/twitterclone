@@ -116,7 +116,9 @@ app.post('/api/users', function (req, resp) {
     //task23
     var User = connect.model('User');
     var newUser = new User(
-            { name: req.body.user.name,
+            { 
+              id: req.body.user.id,
+              name: req.body.user.name,
               email: req.body.user.email,
               password: req.body.user.password,
               followingIds: req.body.user.followingIds
