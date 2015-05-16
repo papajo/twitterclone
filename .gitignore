@@ -1,2 +1,11 @@
+<<<<<<< HEAD
 
 .talentbuddy
+=======
+.talentbuddy
+hello_server.js
+node_modules/
+page.html
+test/
+tester.js
+>>>>>>> 2cdfadaa7dda17e41f7f646ee609bce22be494f7
