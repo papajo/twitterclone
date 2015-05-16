@@ -13,17 +13,10 @@ passport.serializeUser(function(user, done) {
  
 passport.deserializeUser(function(id, done) {
   
-  	// for (var i = 0; i < fixtures.users.length; i++){
-  	// 	console.log(fixtures.users[i].id);
-  	// 	if (fixtures.users[i].id == id){
-  	// 		return done (null, fixtures.users[i]);
-  	// 	} 	
-  	// }
     //task 24
-    User.findOne({ }, 'id', function(err, id) { });
-    if (err) return resp.sendStatus(500);
-  	sendStatus(200);
-    return done (null, false);
+    User.findOne({ 'id': id }, function(err, user) { 
+          return done (err, user);
+    });
    
 });
 
