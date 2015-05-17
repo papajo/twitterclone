@@ -21,22 +21,20 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new LocalStrategy(
-	function (username, password, done){
-	for (var i = 0; i < fixtures.users.length; i++){
-  		
-  		if (fixtures.users[i].id == username){
-  			if (fixtures.users[i].password == password){
-  				return done (null, fixtures.users[i]);
-  			} 
-  			else {
-  				return done (null, false, {message: 'Incorrect password.'})
-  			}
-  		} 
-  	}
-  	return done (null, false, {message: 'Incorrect username.'});
-
-})
-);
+  //task 25
+  function(username, password, done) {
+    User.findOne({ id: username }, function(err, user) {
+      if (err) { return done(err); }
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+      if (user.password !== password) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    });
+  }
+));
 
  
 module.exports = passport;

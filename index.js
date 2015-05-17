@@ -98,12 +98,16 @@ if(!req.query.userId){
 app.get('/api/users/:userId', function userIdHandler(req, resp) {
   console.log(req.route);
 
-    for (var i = 0; i < fixtures.users.length; i++){
-      if (fixtures.users[i].id == req.params.userId){
-          return resp.send({user: fixtures.users[i]});
-      }
-    }
-     resp.sendStatus(404);
+    User.findOne({'id': userId}, function(err, user) {
+      return resp.({user: user});
+    });
+
+    // for (var i = 0; i < fixtures.users.length; i++){
+    //   if (fixtures.users[i].id == req.params.userId){
+    //       return resp.send({user: fixtures.users[i]});
+    //   }
+    // }
+    //  resp.sendStatus(404);
   });
 
 
