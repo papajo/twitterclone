@@ -69,7 +69,7 @@ function ensureAuthentication(req, res, next) {
 }
 
 //GET /api/tweets route
-app.get('/api/tweets', function userIdHandler(req, resp) {
+app.get('/api/tweets', function (req, resp) {
   console.log(req.route);
 var tweets = [];
 if(!req.query.userId){
@@ -92,24 +92,42 @@ if(!req.query.userId){
 
   });
 
-//Route GET /api/users/billgates
+//Route GET /api/users/:userId
 //http://127.0.0.1:3000/api/users/billgates
 
-app.get('/api/users/:userId', function userIdHandler(req, resp) {
+app.get('/api/users/:userId', function (req, resp) {
   console.log(req.route);
-
-    User.findOne({'id': userId}, function(err, user) {
-      return resp.({user: user});
+    //task 26-1
+    User.findOne({ id: req.params.userId }, function(err, User) {
+    if (err) {
+      return resp.sendStatus(500)
+    }
+    if (!user) {
+      return resp.sendStatus(404)
+    }
+    resp.sendStatus(200);
+    return resp.send('user', { user: user })
     });
 
-    // for (var i = 0; i < fixtures.users.length; i++){
-    //   if (fixtures.users[i].id == req.params.userId){
-    //       return resp.send({user: fixtures.users[i]});
-    //   }
-    // }
-    //  resp.sendStatus(404);
   });
 
+app.put('/api/users/:userId', ensureAuthentication, function(req, res) {
+  console.log(req.route)
+  //task 26-2
+  var User = conn.model('User')
+    , query = { id: req.params.userId }
+    , update = { password: req.body.password }
+ 
+  if (req.user.id !== req.params.userId) {
+    return res.sendStatus(403)
+  }
+  User.findOneAndUpdate(query, update, function(err, user) {
+    if (err) {
+      return res.sendStatus(500)
+    }
+    res.sendStatus(200)
+  })
+});
 
 app.use(bodyParser());
 //POST /api/users
