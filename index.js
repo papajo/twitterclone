@@ -106,7 +106,6 @@ app.get('/api/users/:userId', function (req, resp) {
     if (!user) {
       return resp.sendStatus(404)
     }
-    resp.sendStatus(200);
     return resp.send({ user: user })
     });
 
@@ -115,7 +114,8 @@ app.get('/api/users/:userId', function (req, resp) {
 app.put('/api/users/:userId', ensureAuthentication, function(req, res) {
   console.log(req.route)
   //task 26-2
-  var User = conn.model('User')
+  var User = connect.model('User')
+
     , query = { id: req.params.userId }
     , update = { password: req.body.password }
  
