@@ -98,7 +98,8 @@ if(!req.query.userId){
 app.get('/api/users/:userId', function (req, resp) {
   console.log(req.route);
     //task 26-1
-    User.findOne({ id: req.params.userId }, function(err, User) {
+    var User = connect.model('User')
+    User.findOne({ id: req.params.userId }, function(err, user) {
     if (err) {
       return resp.sendStatus(500)
     }
@@ -106,7 +107,7 @@ app.get('/api/users/:userId', function (req, resp) {
       return resp.sendStatus(404)
     }
     resp.sendStatus(200);
-    return resp.send('user', { user: user })
+    return resp.send({ user: user })
     });
 
   });
