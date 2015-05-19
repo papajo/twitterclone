@@ -166,32 +166,45 @@ app.post('/api/users', function (req, resp) {
 app.post('/api/tweets', ensureAuthentication, function(req, resp) {
   console.log('BODY:', req.body);
   //task-27
-  var User = connect.model('Tweets')
+  var Tweet = connect.model('Tweet')
   var createTime = (new Date().getTime())/1000 | 0;
   
-  var newTweet = new Tweets ({
-    text: req.body.tweet.text,
-    created: createTime,
-    userId: req.user.id,
-    __v: 0
-  })
+  var newTweet = new Tweet ({
+                                text: req.body.tweet.text,
+                                created: createTime,
+                                userId: req.user.id,
+                                __v: 0
+                              })
   newTweet.save(function(err, tweet) {
     if (err) return resp.send(err)
   })
-  return res.send({ tweet: tweet.toClient() })
+  return resp.send({ tweet: newTweet.toClient() })
   
 });
 
 //GET /api/tweets/:tweetId
-app.get('/api/tweets/:tweetId', function(req, resp) {
+app.get('/api/tweets/:tweetId', function(req, res) {
     console.log(req.route);
-
-    for (var i = 0; i < fixtures.tweets.length; i++){
-      if (fixtures.tweets[i].id == req.params.tweetId){
-          return resp.send({tweet: fixtures.tweets[i]});
-      }
+    //Task-28
+    var Tweet = connect.model('Tweet')
+      , query = { id: req.params.tweetId }
+ 
+  if (req.tweet.id !== req.params.userId) {
+    return res.sendStatus(404)
+  }
+  Tweet.findById(query, function(err, tweet) {
+    if (err) {
+      return res.sendStatus(500)
     }
-     resp.sendStatus(404);
+    res.send({ tweet: tweet })
+  })
+
+    // for (var i = 0; i < fixtures.tweets.length; i++){
+    //   if (fixtures.tweets[i].id == req.params.tweetId){
+    //       return resp.send({tweet: fixtures.tweets[i]});
+    //   }
+    // }
+    //  resp.sendStatus(404);
 
 });
 
