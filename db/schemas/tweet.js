@@ -8,6 +8,10 @@ var tweetSchema = new Schema({
   created: { type: Number},
   text: String
   
+  tweetSchema.methods.toClient = function (tweet) {
+  	return this.model('Tweet').toObject({ versionKey: true }, tweet)
+  }
+
 });
 
 module.exports = tweetSchema;

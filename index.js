@@ -165,19 +165,20 @@ app.post('/api/users', function (req, resp) {
 //POST /api/tweets
 app.post('/api/tweets', ensureAuthentication, function(req, resp) {
   console.log('BODY:', req.body);
-
-  var autoId = shortId.generate();
+  //task-27
+  var User = connect.model('Tweets')
   var createTime = (new Date().getTime())/1000 | 0;
   
-  var newTweet = {
-    id: autoId,
+  var newTweet = new Tweets ({
     text: req.body.tweet.text,
     created: createTime,
-    userId: req.user.id
-  }
-  fixtures.tweets.push(newTweet);
-  
-  resp.send({tweet: newTweet});
+    userId: req.user.id,
+    __v: 0
+  })
+  newTweet.save(function(err, tweet) {
+    if (err) return resp.send(err)
+  })
+  return res.send({ tweet: tweet.toClient() })
   
 });
 
