@@ -1,8 +1,11 @@
 var passport = require('passport');
 var fixtures = require('./fixtures');
 var bodyParser = require('body-parser');
-
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
+var bcrypt = require('bcrypt')
 var LocalStrategy = require('passport-local').Strategy;
+var userSchema = require('./db/schemas/user')
 
 var conn = require('./db')
   , User = conn.model('User');
@@ -36,5 +39,8 @@ passport.use(new LocalStrategy(
   }
 ));
 
- 
+userSchema.methods.comparePassword = function(password) {
+    var user = this
+    return bcrypt.compareSync(password, user.password)
+} 
 module.exports = passport;
