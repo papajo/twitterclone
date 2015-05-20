@@ -194,21 +194,33 @@ app.get('/api/tweets/:tweetId', function(req, res) {
 })
 
 //DELETE /api/tweets/:tweetId
-app.delete('/api/tweets/:tweetId', ensureAuthentication, function(req, resp) {
+app.delete('/api/tweets/:tweetId', ensureAuthentication, function(req, res) {
     console.log(req.route);
-    if ( req.user.id !== req.params.userId) { return resp.sendStatus(403) }
-    var Tweet = connect.model('Tweet')
-
-    Tweet.findByIdAndRemove(req.params.tweetId, function(err, tweet) {
-    if(err) {
-      return resp.sendStatus(500)
-    }
-    if (!tweet){
-      return resp.sendStatus(404)
-    }
     
+      var Tweet = connect.model('Tweet')
+    , tweetId = req.params.tweetId
+ 
+    Tweet.findById(tweetId, function(err, tweet) {
+      if (err) {
+        return res.sendStatus(500)
+      }
+   
+      if (!tweet) {
+        return res.sendStatus(404)
+      }
+   
+      if (tweet.userId !== req.user.id) {
+        return res.sendStatus(403)
+      }
+   
+      Tweet.findByIdAndRemove(tweet._id, function(err) {
+        if (err) {
+          return res.sendStatus(500)
+        }
+        res.sendStatus(200)
+      })
     })
-    resp.sendStatus(200) 
+    
 });
 
 //POST Logout /api/auth.logout
