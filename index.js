@@ -69,33 +69,25 @@ function ensureAuthentication(req, res, next) {
 }
 
 //GET /api/tweets route
-app.get('/api/tweets/:userId', function (req, resp) {
-  console.log(req.route);
-  var tweets = []
-    , User = connect.model('User')
-    , Tweet = connect.model('Tweet')
-  if(!req.query.userId){
-    	return resp.sendStatus(400)
+app.get('/api/tweets', function(req, res) {
+  if (!req.query.userId) {
+    return res.sendStatus(400)
   }
-  User.find(null, null, 
-    { sort: { created: -1 } }, function(err, users) {
-    // developers sorted in ascending order by created
-     resp.send({ user: users })
-  })
  
-  	// for (var i=0; i < fixtures.tweets.length; i++){
-  	// 	//console.log(fixtures.tweets[i]);
-  	// 	if (fixtures.tweets[i].userId == req.query.userId){
-  	// 		tweets.push(fixtures.tweets[i]);	
-  	// 	}
-  	// }
-
-  	// var sortedTweets = tweets.sort(function(a, b) {
-  	// 	return b.created - a.created
-  	// });
-
-  	// resp.send({tweets: sortedTweets});
-  });
+  var Tweet = connect.model('Tweet')
+    , query = { userId: req.query.userId }
+    , options = { sort: { created: -1 } }
+ 
+  Tweet.find(query, null, options, function(err, tweets) {
+    if (err) {
+      return res.sendStatus(500)
+    }
+    var responseTweets = tweets.map(function(tweet) { 
+      return tweet.toClient() 
+    })
+    res.send({ tweets: responseTweets })
+  })
+});
 
 //Route GET /api/users/:userId
 //http://127.0.0.1:3000/api/users/billgates
@@ -204,18 +196,19 @@ app.get('/api/tweets/:tweetId', function(req, res) {
 //DELETE /api/tweets/:tweetId
 app.delete('/api/tweets/:tweetId', ensureAuthentication, function(req, resp) {
     console.log(req.route);
+    if ( req.user.id !== req.params.userId) { return resp.sendStatus(403) }
+    var Tweet = connect.model('Tweet')
 
-    for (var i = 0; i < fixtures.tweets.length; i++){
-      if (fixtures.tweets[i].id == req.params.tweetId){
-          if (fixtures.tweets[i].userId !== req.user.id) {
-              return resp.sendStatus(403);
-          }
-          fixtures.tweets.splice(i, 1);
-          return resp.sendStatus(200);
-      }
+    Tweet.findByIdAndRemove(req.params.tweetId, function(err, tweet) {
+    if(err) {
+      return resp.sendStatus(500)
     }
-     resp.sendStatus(404);
-
+    if (!tweet){
+      return resp.sendStatus(404)
+    }
+    
+    })
+    resp.sendStatus(200) 
 });
 
 //POST Logout /api/auth.logout
