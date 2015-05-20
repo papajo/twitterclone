@@ -184,29 +184,23 @@ app.post('/api/tweets', ensureAuthentication, function(req, resp) {
 
 //GET /api/tweets/:tweetId
 app.get('/api/tweets/:tweetId', function(req, res) {
-    console.log(req.route);
-    //Task-28
-    var Tweet = connect.model('Tweet')
-      , query = { id: req.params.tweetId }
- 
-  if (req.tweet.id !== req.params.userId) {
-    return res.sendStatus(404)
-  }
-  Tweet.findById(query, function(err, tweet) {
+  var Tweet = connect.model('Tweet')
+  Tweet.findById(req.params.tweetId, function(err, tweet) {
     if (err) {
       return res.sendStatus(500)
     }
-    res.send({ tweet: tweet })
+    if (!tweet) {
+      return res.sendStatus(404)
+    }
+    res.send({ tweet: tweet.toClient() })
   })
-
+})
     // for (var i = 0; i < fixtures.tweets.length; i++){
     //   if (fixtures.tweets[i].id == req.params.tweetId){
     //       return resp.send({tweet: fixtures.tweets[i]});
     //   }
     // }
     //  resp.sendStatus(404);
-
-});
 
 //DELETE /api/tweets/:tweetId
 app.delete('/api/tweets/:tweetId', ensureAuthentication, function(req, resp) {
