@@ -69,27 +69,32 @@ function ensureAuthentication(req, res, next) {
 }
 
 //GET /api/tweets route
-app.get('/api/tweets', function (req, resp) {
+app.get('/api/tweets/:userId', function (req, resp) {
   console.log(req.route);
-var tweets = [];
-if(!req.query.userId){
-  	return resp.sendStatus(400)
+  var tweets = []
+    , User = connect.model('User')
+    , Tweet = connect.model('Tweet')
+  if(!req.query.userId){
+    	return resp.sendStatus(400)
   }
-  else
-  {
-  	for (var i=0; i < fixtures.tweets.length; i++){
-  		//console.log(fixtures.tweets[i]);
-  		if (fixtures.tweets[i].userId == req.query.userId){
-  			tweets.push(fixtures.tweets[i]);	
-  		}
-  	}
-  	var sortedTweets = tweets.sort(function(a, b) {
-  		return b.created - a.created
-  	});
+  User.find(null, null, 
+    { sort: { created: -1 } }, function(err, users) {
+    // developers sorted in ascending order by created
+     resp.send({ user: users })
+  })
+ 
+  	// for (var i=0; i < fixtures.tweets.length; i++){
+  	// 	//console.log(fixtures.tweets[i]);
+  	// 	if (fixtures.tweets[i].userId == req.query.userId){
+  	// 		tweets.push(fixtures.tweets[i]);	
+  	// 	}
+  	// }
 
-  	resp.send({tweets: sortedTweets});
-  }
+  	// var sortedTweets = tweets.sort(function(a, b) {
+  	// 	return b.created - a.created
+  	// });
 
+  	// resp.send({tweets: sortedTweets});
   });
 
 //Route GET /api/users/:userId
@@ -195,12 +200,6 @@ app.get('/api/tweets/:tweetId', function(req, res) {
     res.send({ tweet: tweet.toClient() })
   })
 })
-    // for (var i = 0; i < fixtures.tweets.length; i++){
-    //   if (fixtures.tweets[i].id == req.params.tweetId){
-    //       return resp.send({tweet: fixtures.tweets[i]});
-    //   }
-    // }
-    //  resp.sendStatus(404);
 
 //DELETE /api/tweets/:tweetId
 app.delete('/api/tweets/:tweetId', ensureAuthentication, function(req, resp) {
