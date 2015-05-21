@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema
-  , bcrypt = require('bcrypt')
+var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt');
 
 var userSchema = new Schema({
   id:  { type: String, unique: true },
@@ -15,14 +15,14 @@ userSchema.pre('save', function(next) {
 // assign encrypted value to this.password
 // call next() when you're done
 
-	var user = this
+	var user = this;
 	if (!user.isModified('password')) { return next() }
 	bcrypt.hash(user.password, null, null, function(err, hash) {
 		if(err) { return next(err) }
-		user.password = hash	
-	})	
-
-next();
-})
+		user.password = hash;	
+		next();
+	});	
+	
+});
 
 module.exports = userSchema;
