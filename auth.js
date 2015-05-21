@@ -23,25 +23,24 @@ passport.deserializeUser(function(id, done) {
    
 });
 
-//passport.use(new LocalStrategy(
+passport.use(new LocalStrategy(
   //task 25
-  // function(username, password, done) {
-  //   User.findOne({ id: username }, function(err, user) {
-  //     if (err) { return done(err); }
-  //     if (!user) {
-  //       return done(null, false, { message: 'Incorrect username.' });
-  //     }
-  //     if (user.password !== password) {
-  //       return done(null, false, { message: 'Incorrect password.' });
-  //     }
-  //     return done(null, user);   
-  //   });
-    
-  // }
-
-  // ));
-     userSchema.methods.comparePassword = function(password) {
-        var user = this;
-        return bcrypt.compareSync(password, user.password);
-      };
+  function(username, password, done) {
+    User.findOne({ id: username }, function(err, user) {
+    if (err) {
+      return done(err)
+    }
+    if (!user) {
+      return done(null, false, { message: 'Incorrect username.' })
+    }
+    bcrypt.compare(password, user.password, function(err, matched) {
+      if (err) {
+        return done(err)
+      }
+      matched ? done(null, user)
+              : done(null, false, { message: 'Incorrect password.' })
+    })
+  });
+  }));
+     
 module.exports = passport;
