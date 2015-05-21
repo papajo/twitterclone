@@ -24,6 +24,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new LocalStrategy(
+  
   //task 25
   function(username, password, done) {
     User.findOne({ id: username }, function(err, user) {
@@ -34,12 +35,10 @@ passport.use(new LocalStrategy(
       return done(null, false, { message: 'Incorrect username.' })
     }
     bcrypt.compare(password, user.password, function(err, matched) {
-      if (err) {
-        return done(err)
-      }
+      if (err) { return done(err) }
       matched ? done(null, user)
-              : done(null, false, { message: 'Incorrect password.' })
-    })
+              : done(null, false, { message: 'Incorrect password.' });
+    });
   });
   }));
      
