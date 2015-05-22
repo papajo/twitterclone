@@ -5,13 +5,32 @@ var shortId = require('shortid');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('./auth');
-var app = express();
 var config = require('./config');
 var connect = require('./db');
 
 var ensureAuthentication = require('./middleware/ensureAuthentication');
+var app = express();
+require('./middleware')(app);
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 
+// parse application/json
+app.use(bodyParser.json());
+
+//Load cookieParser
+app.use(cookieParser());
+
+//Load the session middleware 
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}));
+
+//load the passport.initialize() and passport.session() middleware 
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', function (req, resp) {
   resp.send('Hello World!');
@@ -82,7 +101,7 @@ app.get('/api/users/:userId', function (req, resp) {
 
   });
 
-app.use(bodyParser());
+//app.use(bodyParser());
 //POST /api/users
 app.post('/api/users', function (req, resp) {
     console.log('BODY:', req.body)
