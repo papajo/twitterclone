@@ -5,7 +5,7 @@ var express = require('express')
   , ensureAuthentication = require('../../middleware/ensureAuthentication')
 
 //Authetication Route
-router.post('/api/auth/login', 
+router.post('/login', 
   function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     if (err) { 
@@ -30,7 +30,7 @@ router.post('/api/auth/login',
 });
 
 //POST Logout /api/auth.logout
-router.post('/api/auth/logout', function(req, res){
+router.post('/logout', function(req, res){
     req.logout(); 
     res.sendStatus(200);
       
