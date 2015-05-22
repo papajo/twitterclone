@@ -6,7 +6,7 @@ var express = require('express');
 // var session = require('express-session');
 // var passport = require('./auth');
  var config = require('./config');
-// var connect = require('./db');
+//var connect = require('./db');
 
 var ensureAuthentication = require('./middleware/ensureAuthentication')
   , app = express();

@@ -1,27 +1,28 @@
 var express = require('express')
   , router = express.Router()
+  , connect = require('../../db')
   , ensureAuthentication = require('../../middleware/ensureAuthentication')
 
 // //Route GET /api/users/:userId
 // //http://127.0.0.1:3000/api/users/billgates
-router.get('/api/users/:userId', function (req, resp) {
+router.get('/:userId', function (req, res) {
   console.log(req.route);
     //task 26-1
     var User = connect.model('User')
     User.findOne({ id: req.params.userId }, function(err, user) {
     if (err) {
-      return resp.sendStatus(500)
+      return res.sendStatus(500)
     }
     if (!user) {
-      return resp.sendStatus(404)
+      return res.sendStatus(404)
     }
-    return resp.send({ user: user })
+    return res.send({ user: user })
     });
 
   });
 
 //POST /api/users
-router.post('/api/users', function (req, resp) {
+router.post('/', function (req, res) {
     console.log('BODY:', req.body)
     
     req.body.user.followingIds = [];
@@ -39,19 +40,19 @@ router.post('/api/users', function (req, resp) {
         if (err) {
           if (err.code === 11000) {
               //Duplicate condition
-                 return resp.sendStatus(409);
+                 return res.sendStatus(409);
           }
         }
         //successful validation, save user and authenticate
         req.login(user, function(err){
-          if (err) return resp.sendStatus(500);
-          return resp.sendStatus(200);
+          if (err) return res.sendStatus(500);
+          return res.sendStatus(200);
         });
     });
     
 });
 
-router.put('/api/users/:userId', ensureAuthentication, function(req, res) {
+router.put('/:userId', ensureAuthentication, function(req, res) {
     console.log(req.route)
     //task 26-2
     var User = connect.model('User')

@@ -1,5 +1,7 @@
 var express = require('express')
   , router = express.Router()
+  , connect = require('../../db')
+  , passport = require('../../auth')
   , ensureAuthentication = require('../../middleware/ensureAuthentication')
 
 //Authetication Route
@@ -28,9 +30,9 @@ router.post('/api/auth/login',
 });
 
 //POST Logout /api/auth.logout
-router.post('/api/auth/logout', function(req, resp){
+router.post('/api/auth/logout', function(req, res){
     req.logout(); 
-    resp.sendStatus(200);
+    res.sendStatus(200);
       
 });
 

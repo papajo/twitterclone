@@ -1,9 +1,10 @@
 var express = require('express')
   , router = express.Router()
+  , connect = require('../../db')
   , ensureAuthentication = require('../../middleware/ensureAuthentication')
 
 //GET /api/tweets route
-router.get('/api/tweets', function(req, res) {
+router.get('/', function(req, res) {
   if (!req.query.userId) {
     return res.sendStatus(400)
   }
@@ -24,7 +25,7 @@ router.get('/api/tweets', function(req, res) {
 });
 
 //GET /api/tweets/:tweetId
-router.get('/api/tweets/:tweetId', function(req, res) {
+router.get('/:tweetId', function(req, res) {
   var Tweet = connect.model('Tweet')
   Tweet.findById(req.params.tweetId, function(err, tweet) {
     if (err) {
@@ -38,7 +39,7 @@ router.get('/api/tweets/:tweetId', function(req, res) {
 });
 
 //POST /api/tweets
-router.post('/api/tweets', ensureAuthentication, function(req, resp) {
+router.post('/', ensureAuthentication, function(req, res) {
 	console.log('BODY:', req.body);
 	//task-27
 	var Tweet = connect.model('Tweet')
@@ -51,14 +52,14 @@ router.post('/api/tweets', ensureAuthentication, function(req, resp) {
 	                              __v: 0
 	                            })
 	newTweet.save(function(err, tweet) {
-	  if (err) return resp.send(err)
+	  if (err) return res.send(err)
 })
-return resp.send({ tweet: newTweet.toClient() })
+return res.send({ tweet: newTweet.toClient() })
 
 });
 
 //DELETE /api/tweets/:tweetId
-router.delete('/api/tweets/:tweetId', ensureAuthentication, function(req, res) {
+router.delete('/:tweetId', ensureAuthentication, function(req, res) {
   console.log(req.route);
   
     var Tweet = connect.model('Tweet')
