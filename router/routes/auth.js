@@ -23,7 +23,7 @@ router.post('/login',
         return next(err); //not sure what this should be set to?
       }
       console.log('all good');
-      return res.send({user: user});
+      return res.send({ user: user.toClient() });
       //return res.redirect('/users/' + user.username);
     });
   })(req, res, next);

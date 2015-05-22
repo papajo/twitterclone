@@ -14,7 +14,6 @@ userSchema.pre('save', function(next) {
 // get encrypted value of this.password
 // assign encrypted value to this.password
 // call next() when you're done
-
 	var user = this;
 	if (!user.isModified('password')) { return next() }
 	bcrypt.hash(user.password, 10, function(err, hash) {
@@ -25,4 +24,13 @@ userSchema.pre('save', function(next) {
 	
 });
 
+userSchema.methods.toClient = function() {
+	
+	var secureUser = {
+     	id: this.id,
+		name: this.name
+	};
+	return secureUser;
+}
+	
 module.exports = userSchema;
