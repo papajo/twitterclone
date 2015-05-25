@@ -108,4 +108,21 @@ router.post('/:userId/unfollow', ensureAuthentication, function(req, res) {
     })
 });
 
+router.post('/:userId/friends', ensureAuthentication, function(req, res) {
+    console.log(req.route);
+
+    var User = connect.model('User')
+      , userId = req.params.userId
+
+    User.findByUserId(userId, function(err, user) {
+        if(err) { return sendStatus(500) }
+        if (!user) { return res.sendStatus(404) }
+        req.user.findFriends(userId, function(err) {
+            if (err) { return res.sendStatus(500) }
+        res.send({ user: user.toClient() })
+        })
+    })
+
+})
+
 module.exports = router;
