@@ -70,7 +70,7 @@ router.put('/:userId', ensureAuthentication, function(req, res) {
     })
   });
 
-router.post('/:userId/follow', ensureAuthentication ,function(req, res) {
+router.post('/:userId/follow', ensureAuthentication, function(req, res) {
     console.log(req.route);
 
     var User = connect.model('User')
@@ -89,6 +89,22 @@ router.post('/:userId/follow', ensureAuthentication ,function(req, res) {
             }
         res.sendStatus(200)
         })  
+    })
+});
+
+router.post('/:userId/unfollow', ensureAuthentication, function(req, res) {
+    console.log(req.route);
+
+    var User = connect.model('User')
+      , userId = req.params.userId
+
+    User.findByUserId(userId, function(err, user) {
+        if (err) { return res.sendStatus(500) }
+        if (!user) { return res.sendStatus(403) }
+        req.user.unfollow(userId, function(err) {
+          if (err) { return res.sendStatus(500) }
+        res.sendStatus(200)
+        })
     })
 });
 

@@ -42,4 +42,9 @@ userSchema.methods.follow = function(userId, done) {
 	this.model('User').findByIdAndUpdate(this._id, update, done)
 }
 	
+userSchema.methods.unfollow = function(userId, done) {
+	var update = { $pull: { followingIds: userId } }
+	this.model('User').findOneAndUpdate(this._id, update, done)
+}	
+
 module.exports = userSchema;
