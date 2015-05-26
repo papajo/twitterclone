@@ -108,7 +108,7 @@ router.post('/:userId/unfollow', ensureAuthentication, function(req, res) {
     })
 });
 
-router.post('/:userId/friends', ensureAuthentication, function(req, res) {
+router.get('/:userId/friends', function(req, res) {
     console.log(req.route);
 
     var User = connect.model('User')
@@ -119,10 +119,10 @@ router.post('/:userId/friends', ensureAuthentication, function(req, res) {
         if (!user) { return res.sendStatus(404) }
         req.user.findFriends(userId, function(err) {
             if (err) { return res.sendStatus(500) }
-        res.send({ user: user.toClient() })
+        var friendsList = friends.map(function(user) { return user.toClient() })      
+        res.send({ users: friendsList })
         })
     })
-
 })
 
 module.exports = router;
