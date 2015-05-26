@@ -117,7 +117,7 @@ router.get('/:userId/friends', function(req, res) {
     User.findByUserId(userId, function(err, user) {
         if(err) { return sendStatus(500) }
         if (!user) { return res.sendStatus(404) }
-        user.findFriends(userId, function(err) {
+        user.findFriends(function(err, friends) {
             if (err) { return res.sendStatus(500) }
         var friendsList = friends.map(function(user) { return user.toClient() })      
         res.send({ users: friendsList })
