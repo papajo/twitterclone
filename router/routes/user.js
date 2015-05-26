@@ -123,6 +123,24 @@ router.get('/:userId/friends', function(req, res) {
         res.send({ users: friendsList })
         })
     })
+});
+
+router.get('/:userId/followers', function(req, res) {
+    console.log(req.route)
+
+    var User = connect.model('user')
+      , userId = req.params.userId
+
+    User.findByUserId(userId, function(err, user) {
+        if(err) { return sendStatus(500) }
+        if (!user) { return res.sendStatus(404) }
+        user.findFollowers(function(err, followers) {
+            if (err) { return res.sendStatus(500) }
+        var followersList = friends.map(function(user) { return user.toClient() })      
+        res.send({ users: followersList })
+        })
+    })      
+
 })
 
 module.exports = router;

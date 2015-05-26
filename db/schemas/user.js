@@ -34,7 +34,7 @@ userSchema.methods.toClient = function() {
 }
 
 userSchema.statics.findByUserId = function(id, done) {
-	this.findOne({ id: id }, done)
+	this.model('User').findOne({ id: id }, done)
 }
 
 userSchema.methods.follow = function(userId, done) {
@@ -50,5 +50,10 @@ userSchema.methods.unfollow = function(userId, done) {
 userSchema.methods.findFriends = function(done) {
 	this.model('User').find({ id: { $in: this.followingIds }}, done)
 }
+
+userSchema.methods.findFollowers = function(done) {
+	this.model('User').find({ userId: userId })
+}
+
 
 module.exports = userSchema;
