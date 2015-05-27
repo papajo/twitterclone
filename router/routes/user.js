@@ -128,7 +128,7 @@ router.get('/:userId/friends', function(req, res) {
 router.get('/:userId/followers', function(req, res) {
     console.log(req.route)
 
-    var User = connect.model('user')
+    var User = connect.model('User')
       , userId = req.params.userId
 
     User.findByUserId(userId, function(err, user) {
@@ -141,6 +141,6 @@ router.get('/:userId/followers', function(req, res) {
         })
     })      
 
-})
+});
 
 module.exports = router;

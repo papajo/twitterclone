@@ -4,24 +4,47 @@ var express = require('express')
   , ensureAuthentication = require('../../middleware/ensureAuthentication')
 
 //GET /api/tweets route
-router.get('/', function(req, res) {
-  if (!req.query.userId) {
+router.get('/:stream/:userId', function(req, res) {
+  if (!req.params.userId || !req.params.stream) {
     return res.sendStatus(400)
   }
  
   var Tweet = connect.model('Tweet')
-    , query = { userId: req.query.userId }
-    , options = { sort: { created: -1 } }
+    , query = { userId: req.params.userId }
+    // , options = { sort: { created: -1 } }
+
+  if (req.params.stream === 'profile_timeline') {
+      Tweet.findTweetsById(req.params.tweetId, function(err, tweet) {
+        if (err) {
+          return res.sendStatus(500)
+        }
+        if (!tweet) {
+          return res.sendStatus(404)
+        }
+        return res.send({ tweet: tweets })
+      })
+  }
+  if (req.params.stream === 'home_timeline') {
+      Tweet.findTweetsById(req.params.tweetId, function(err, tweet) {
+        if (err) {
+          return res.sendStatus(500)
+        }
+        if (!tweet) {
+          return res.sendStatus(404)
+        }
+        return res.send({ tweet: tweets })
+      })
+  }
  
-  Tweet.find(query, null, options, function(err, tweets) {
-    if (err) {
-      return res.sendStatus(500)
-    }
-    var responseTweets = tweets.map(function(tweet) { 
-      return tweet.toClient() 
-    })
-    res.send({ tweets: responseTweets })
-  })
+  // Tweet.find(query, null, options, function(err, tweets) {
+  //   if (err) {
+  //     return res.sendStatus(500)
+  //   }
+  //   var responseTweets = tweets.map(function(tweet) { 
+  //     return tweet.toClient() 
+  //   })
+  //   res.send({ tweets: responseTweets })
+  // })
 });
 
 //GET /api/tweets/:tweetId
