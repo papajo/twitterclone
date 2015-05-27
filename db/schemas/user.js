@@ -52,7 +52,7 @@ userSchema.methods.findFriends = function(done) {
 }
 
 userSchema.methods.findFollowers = function(done) {
-	this.model('User').find({ userId: userId })
+	this.model('User').find({ followingIds: { $in: [this.id] }}, done )
 }
 
 

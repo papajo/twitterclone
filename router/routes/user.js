@@ -136,7 +136,7 @@ router.get('/:userId/followers', function(req, res) {
         if (!user) { return res.sendStatus(404) }
         user.findFollowers(function(err, followers) {
             if (err) { return res.sendStatus(500) }
-        var followersList = friends.map(function(user) { return user.toClient() })      
+        var followersList = followers.map(function(user) { return user.toClient() })      
         res.send({ users: followersList })
         })
     })      
