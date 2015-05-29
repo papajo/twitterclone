@@ -4,16 +4,17 @@ var express = require('express')
   , ensureAuthentication = require('../../middleware/ensureAuthentication')
 
 //GET /api/tweets route
-router.get('/:stream/:userId', function(req, res) {
-  if (!req.params.userId || !req.params.stream) {
+router.get('/', ensureAuthentication, function(req, res) {
+  if (!req.query.userId || !req.query.stream) {
     return res.sendStatus(400)
   }
  
   var Tweet = connect.model('Tweet')
-    , query = { userId: req.params.userId }
+    , stream = req.query.stream
+    , userId = req.query.userId
     // , options = { sort: { created: -1 } }
 
-  if (req.params.stream === 'profile_timeline') {
+  if (stream === 'profile_timeline') {
       Tweet.findTweetsById(req.params.tweetId, function(err, tweet) {
         if (err) {
           return res.sendStatus(500)
@@ -23,8 +24,8 @@ router.get('/:stream/:userId', function(req, res) {
         }
         return res.send({ tweet: tweets })
       })
-  }
-  if (req.params.stream === 'home_timeline') {
+  };
+  if (stream === 'home_timeline') {
       Tweet.findTweetsById(req.params.tweetId, function(err, tweet) {
         if (err) {
           return res.sendStatus(500)
