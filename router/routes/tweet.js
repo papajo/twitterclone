@@ -15,7 +15,7 @@ router.get('/', ensureAuthentication, function(req, res) {
     // , options = { sort: { created: -1 } }
 
   if (stream === 'profile_timeline') {
-      Tweet.findTweetsById(req.params.tweetId, function(err, tweet) {
+      Tweet.findTweetsById(req.query.userId, function(err, tweet) {
         if (err) {
           return res.sendStatus(500)
         }
@@ -24,9 +24,9 @@ router.get('/', ensureAuthentication, function(req, res) {
         }
         return res.send({ tweet: tweets })
       })
-  };
+  }
   if (stream === 'home_timeline') {
-      Tweet.findTweetsById(req.params.tweetId, function(err, tweet) {
+      Tweet.findTweetsById(req.query.userId, function(err, tweet) {
         if (err) {
           return res.sendStatus(500)
         }
