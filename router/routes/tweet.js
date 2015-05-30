@@ -23,7 +23,7 @@ router.get('/', ensureAuthentication, function(req, res) {
         if (!tweet) {
           return res.sendStatus(404)
         }
-        return res.send({ tweet: tweets })
+        return res.send({ tweet: tweet.toClient() })
       })
   }
   if (stream === 'home_timeline') {
@@ -34,7 +34,7 @@ router.get('/', ensureAuthentication, function(req, res) {
         if (!tweet) {
           return res.sendStatus(404)
         }
-        return res.send({ tweet: tweets })
+        return res.send({ tweet: tweet.toClient() })
       })
   }
  
