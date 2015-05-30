@@ -19,4 +19,8 @@ tweetSchema.methods.toClient = function() {
   return tweet
 }
 
+tweetSchema.methods.findTweetsById = function(id, done) {
+  this.model('Tweet').find({ userId: userId }, done)
+}
+
 module.exports = tweetSchema;

@@ -12,10 +12,11 @@ router.get('/', ensureAuthentication, function(req, res) {
   var Tweet = connect.model('Tweet')
     , stream = req.query.stream
     , userId = req.query.userId
+    , tweetId = req.query.tweetId
     // , options = { sort: { created: -1 } }
 
   if (stream === 'profile_timeline') {
-      Tweet.findTweetsById(req.query.userId, function(err, tweet) {
+      Tweet.findTweetsById(req.query.tweetId, function(err, tweet) {
         if (err) {
           return res.sendStatus(500)
         }
@@ -26,7 +27,7 @@ router.get('/', ensureAuthentication, function(req, res) {
       })
   }
   if (stream === 'home_timeline') {
-      Tweet.findTweetsById(req.query.userId, function(err, tweet) {
+      Tweet.findTweetsById(req.query.tweetId, function(err, tweet) {
         if (err) {
           return res.sendStatus(500)
         }

@@ -36,9 +36,6 @@ userSchema.methods.toClient = function() {
 userSchema.statics.findByUserId = function(id, done) {
 	this.model('User').findOne({ id: id }, done)
 }
-userSchema.methods.findTweetsById = function(id, done) {
-	this.model('Tweet').find({ TweetId: TweetId }, done)
-}
 
 userSchema.methods.follow = function(userId, done) {
 	var update = { $addToSet: { followingIds: userId } }
