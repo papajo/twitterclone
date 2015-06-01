@@ -1,7 +1,11 @@
 var mongoose = require('mongoose')
   , config = require('../config')
   , request = require('supertest')
-  , app = require('../index');
+  , app = require('../index')
+
+var Session = require('supertest-session') {
+	app: require('../index');
+})
 
 process.env.NODE_ENV = 'test'
 
@@ -29,7 +33,37 @@ describe('Test suite POST /api/tweets', function() {
 		 
 	})
 
-	it('test case scenario 2', function(done) {
-		done()
+	it('POST route 2', function(done) {
+
+		var chai = require('chai')
+		  , expect = chai.expect
+		  
+		var session = new Session()
+		var testUser = 	{  id: 'test'
+						 , name: 'Test'
+						 , password: 'test'
+						 , email: 'test@test.com'
+						}
+		var testTweet = {}
+
+		session
+			.post('/api/users')
+			.send( {user: testUser })
+			.expect(200)
+			.end(function(err, response) {
+				if (err) return response.sendStatus(err)
+			})
+
+		session
+			.post('/api/tweets')
+			.send({ tweet: testTweet })
+			.expect(200, function(err, response) {
+				try {
+					expect(response.body).to.have.property('tweet')
+					done(null)
+				} catch (err) {
+					done(err)
+				}
+			})
 	})
 })
