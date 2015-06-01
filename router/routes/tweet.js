@@ -5,48 +5,33 @@ var express = require('express')
 
 //GET /api/tweets route
 router.get('/', ensureAuthentication, function(req, res) {
-  if (!req.query.userId || !req.query.stream) {
-    return res.sendStatus(400)
-  }
+  // if (!req.query.userId || !req.query.stream) {
+  //   return res.sendStatus(400)
+  // }
  
   var Tweet = connect.model('Tweet')
     , stream = req.query.stream
     , userId = req.query.userId
-    , tweetId = req.query.tweetId
-    // , options = { sort: { created: -1 } }
-
-  if (stream === 'profile_timeline') {
-      Tweet.findTweetsById(req.query.tweetId, function(err, tweet) {
-        if (err) {
-          return res.sendStatus(500)
-        }
-        if (!tweet) {
-          return res.sendStatus(404)
-        }
-        return res.send({ tweet: tweet.toClient() })
-      })
-  }
+    , options = { sort: { created: -1 } }
+    , query = null
+    
   if (stream === 'home_timeline') {
-      Tweet.findTweetsById(req.query.tweetId, function(err, tweet) {
-        if (err) {
-          return res.sendStatus(500)
-        }
-        if (!tweet) {
-          return res.sendStatus(404)
-        }
-        return res.send({ tweet: tweet.toClient() })
-      })
+      query = { userId: { $in: req.user.followingIds }}
+  } else if (stream === 'profile_timeline' && userId ) {
+      query = { userId: userId }
+  } else {
+      return res.sendStatus(400)
   }
  
-  // Tweet.find(query, null, options, function(err, tweets) {
-  //   if (err) {
-  //     return res.sendStatus(500)
-  //   }
-  //   var responseTweets = tweets.map(function(tweet) { 
-  //     return tweet.toClient() 
-  //   })
-  //   res.send({ tweets: responseTweets })
-  // })
+  Tweet.find(query, null, options, function(err, tweets) {
+    if (err) {
+      return res.sendStatus(500)
+    }
+    var responseTweets = tweets.map(function(tweet) { 
+      return tweet.toClient() 
+    })
+    res.send({ tweets: responseTweets })
+  })
 });
 
 //GET /api/tweets/:tweetId
