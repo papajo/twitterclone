@@ -3,9 +3,10 @@ var mongoose = require('mongoose')
   , request = require('supertest')
   , app = require('../index')
 
-var Session = require('supertest-session') {
-	app: require('../index');
-})
+var Session = require('supertest-session')({
+	app: require('../index'),
+	envs: { NODE_ENV: 'test' }
+});
 
 process.env.NODE_ENV = 'test'
 
@@ -37,7 +38,7 @@ describe('Test suite POST /api/tweets', function() {
 
 		var chai = require('chai')
 		  , expect = chai.expect
-		  
+
 		var session = new Session()
 		var testUser = 	{  id: 'test'
 						 , name: 'Test'
