@@ -1,14 +1,17 @@
+process.env.NODE_ENV = 'test'
+
 var mongoose = require('mongoose')
   , config = require('../config')
   , request = require('supertest')
-  , app = require('../index')
-
-var Session = require('supertest-session')({
-	app: require('../index'),
-	envs: { NODE_ENV: 'test' }
-});
-
-process.env.NODE_ENV = 'test'
+  , expect = require('chai').expect
+//  , async = require('async')
+  
+var app = require('../index')
+  , Session = require('supertest-session')({
+	  app: app
+	, envs: { NODE_ENV: 'test' } 
+	})
+  , session = new Session()
 
 var connection = mongoose.createConnection(
     config.get('database:host')
@@ -25,40 +28,39 @@ describe('Test suite POST /api/tweets', function() {
 		})
 		done(null);
 	})
-	it('POST route 1', function(done) {
+
+	var testUser = {  id: 'test'
+				    , name: 'Test'
+			    	, password: 'test'
+					, email: 'test@test.com'
+					}
+
+	session
+		.post('/api/users')
+		.send( {user: testUser })
+		.expect(200)
+		.end(function(err, response) {
+			if (err) return response.sendStatus(err)
+		})
+
+	it('Test scenario 1', function(done) {
 		request(app)
 			.post('/api/tweets')
-			.set('Accept', 'text/plain')
-			.expect('Content-Type', /utf-8/)
+			.send({ tweet: { text: 'Test Tweet', userId: 'test' }})
 			.expect(403, done)
 		 
 	})
 
-	it('POST route 2', function(done) {
-
-		var chai = require('chai')
-		  , expect = chai.expect
-
-		var session = new Session()
-		var testUser = 	{  id: 'test'
-						 , name: 'Test'
-						 , password: 'test'
-						 , email: 'test@test.com'
-						}
-		var testTweet = {}
-
-		session
-			.post('/api/users')
-			.send( {user: testUser })
-			.expect(200)
-			.end(function(err, response) {
-				if (err) return response.sendStatus(err)
-			})
+	it('Test scenario 2', function(done) {
 
 		session
 			.post('/api/tweets')
-			.send({ tweet: testTweet })
-			.expect(200, function(err, response) {
+			.send({ tweet: { text: 'Test Tweet' } })
+			.expect(200)
+			.end(function(err, response) {
+				if(err) {
+					return done(err)
+				}
 				try {
 					expect(response.body).to.have.property('tweet')
 					done(null)
