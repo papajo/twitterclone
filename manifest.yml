@@ -1,0 +1,10 @@
+applications:
+- services:
+  - MongoLab-mc
+  disk_quota: 1024M
+  host: twitterclone
+  name: twitterclone
+  path: .
+  domain: mybluemix.net
+  instances: 1
+  memory: 256M

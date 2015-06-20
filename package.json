@@ -7,6 +7,7 @@
       "node": "^0.10.x"
     },
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pjoshi",
@@ -23,7 +24,8 @@
     "passport": "^0.2.1",
     "passport-local": "^1.0.0",
     "shortid": "^2.2.2",
-    "supertest-session": "0.0.7"
+    "supertest-session": "0.0.7",
+    "cfenv": "1.0.x"
   },
   "devDependencies": {
     "supertest": "^1.0.1"
